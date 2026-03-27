@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import MyPage from './pages/MyPage';
+import Login from './pages/Login';
+import NaverCallback from './pages/NaverCallback';
 
 function App() {
   return (
@@ -14,6 +16,7 @@ function App() {
           <div className="flex gap-6 font-medium">
             <Link to="/" className="hover:text-blue-400 transition">홈으로</Link>
             <Link to="/mypage" className="hover:text-blue-400 transition">마이페이지</Link>
+            <Link to="/Login" className="hover:text-blue-400 transition">로그인</Link>
           </div>
         </nav>
 
@@ -22,6 +25,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/mypage" element={<MyPage />} />
+            <Route path="/Login" element={<Login />} />
+            <Route path="/api/auth/callback/naver" element={<NaverCallback />} />
           </Routes>
         </main>
       </div>

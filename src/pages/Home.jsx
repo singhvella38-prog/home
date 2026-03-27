@@ -7,11 +7,11 @@ export default function Home() {
         {/* 나중에 이미지를 넣을 자리입니다 */}
         <div className="relative z-20 text-white px-12 w-full">
           <h2 className="text-5xl font-black mb-4 leading-tight">
-            역사와 현대가 공존하는<br />
-            <span className="text-blue-400">공주시 공공디자인</span>
+            CL<br />
+            <span className="text-blue-400">Color and Lighting</span>
           </h2>
           <p className="text-lg opacity-90 max-w-md">
-            기초조사 분석부터 종합 분석도까지, 공주시의 새로운 가치를 디자인합니다.
+            기초조사 분석부터 종합 분석도까지, 우리의 새로운 가치를 디자인합니다.
           </p>
         </div>
       </section>
@@ -20,7 +20,7 @@ export default function Home() {
       <section>
         <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
           <span className="w-2 h-8 bg-blue-600 rounded-full"></span>
-          진행 중인 과업 리스트
+          완료된 프로젝트
         </h3>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
