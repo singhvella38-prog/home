@@ -5,7 +5,6 @@ import Login from './pages/Login';
 import Intro from './pages/Intro';
 import NoticeBoard from './pages/NoticeBoard';
 import Write from './pages/Write';
-import NoticeDetail from './pages/NoticeDetail';
 import NaverCallback from './pages/NaverCallback';
 
 function App() {
@@ -35,7 +34,7 @@ function App() {
             <Route path="/Intro" element={<Intro />} />
             <Route path="/NoticeBoard" element={<NoticeBoard />} />
             <Route path="/Write" element={<Write />} />
-            <Route path="/NoticeDetail" element={<NoticeDetail />} />
+            <Route path="/notice/:id" element={<NoticeDetail />} />
             <Route path="/api/auth/callback/naver" element={<NaverCallback />} />
           </Routes>
         </main>
