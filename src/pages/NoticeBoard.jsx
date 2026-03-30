@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
-
+import { Link } from 'react-router-dom';
 const NoticeBoard = () => {
   const [notices, setNotices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,9 +30,17 @@ const NoticeBoard = () => {
   return (
     <div className="min-h-screen bg-[#0f172a] p-6 text-white font-sans">
       <div className="max-w-4xl mx-auto">
-        <header className="mb-10 border-b border-slate-800 pb-6">
-          <h1 className="text-3xl font-bold tracking-tight">Notice Board</h1>
-          <p className="text-slate-400 mt-2">집중 집중 알려드립니다.</p>
+        <header className="mb-10 border-b border-slate-800 pb-6 flex justify-between items-end">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Notice Board</h1>
+            <p className="text-slate-400 mt-2">공지사항</p>
+          </div>
+          <Link 
+            to="/write" 
+            className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-lg font-bold transition-all shadow-lg shadow-blue-500/20"
+          >
+            글쓰기
+          </Link>
         </header>
 
         <div className="space-y-4">

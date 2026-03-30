@@ -4,6 +4,7 @@ import MyPage from './pages/MyPage';
 import Login from './pages/Login';
 import Intro from './pages/Intro';
 import NoticeBoard from './pages/NoticeBoard';
+import Write from './pages/Write';
 import NaverCallback from './pages/NaverCallback';
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
             <Route path="/Login" element={<Login />} />
             <Route path="/Intro" element={<Intro />} />
             <Route path="/NoticeBoard" element={<NoticeBoard />} />
+            <Route path="/Write" element={<Write />} />
             <Route path="/api/auth/callback/naver" element={<NaverCallback />} />
           </Routes>
         </main>
