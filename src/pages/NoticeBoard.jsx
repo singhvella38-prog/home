@@ -12,8 +12,8 @@ const NoticeBoard = () => {
         const { data, error } = await supabase
           .from('notices')
           .select('id, title, content, author, created_at')
+          .eq('category', 'notice') // 이 줄이 핵심입니다!
           .order('created_at', { ascending: false });
-
         if (error) throw error;
         setNotices(data || []);
       } catch (error) {
