@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Intro from './pages/Intro';
 import NoticeBoard from './pages/NoticeBoard';
 import Write from './pages/Write';
+import NoticeDetail from './pages/NoticeDetail';
 import NaverCallback from './pages/NaverCallback';
 
 function App() {
@@ -14,7 +15,7 @@ function App() {
         {/* 상단 네비게이션 바 */}
         <nav className="flex items-center justify-between px-8 py-4 bg-slate-900 text-white shadow-md">
           <div className="text-xl font-black tracking-tighter">
-            CL <span className="text-blue-400">DESIGN</span>
+            <Link to="/" className="hover:text-blue-400 transition">CL <span className="text-blue-400">DESIGN</span></Link>
           </div>
           <div className="flex gap-6 font-medium">
             <Link to="/" className="hover:text-blue-400 transition">홈으로</Link>
@@ -34,6 +35,7 @@ function App() {
             <Route path="/Intro" element={<Intro />} />
             <Route path="/NoticeBoard" element={<NoticeBoard />} />
             <Route path="/Write" element={<Write />} />
+            <Route path="/NoticeDetail" element={<NoticeDetail />} />
             <Route path="/api/auth/callback/naver" element={<NaverCallback />} />
           </Routes>
         </main>
