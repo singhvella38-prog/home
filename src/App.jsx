@@ -8,6 +8,7 @@ import FreeBoard from './pages/FreeBoard';     // 자유게시판 (새로 생성
 import NoticeDetail from './pages/NoticeDetail'; 
 import Write from './pages/Write';
 import Archive from './pages/Archive';
+import Location from './pages/Location';
 import NaverCallback from './pages/NaverCallback';
 
 function App() {
@@ -26,7 +27,7 @@ function App() {
           <div className="flex gap-6 font-medium items-center">
             <Link to="/" className="hover:text-blue-400 transition">홈으로</Link>
             <Link to="/Intro" className="hover:text-blue-400 transition">Intro</Link>
-            
+            <Link to="/Location" className="hover:text-blue-400 transition">오시는 길</Link>
             {/* 게시판 드롭다운 메뉴 */}
             <div className="relative group">
               {/* 클릭 시 공지사항으로 이동 */}
@@ -62,6 +63,7 @@ function App() {
             <Route path="/FreeBoard" element={<FreeBoard />} /> {/* 추가 */}
             <Route path="/Write" element={<Write />} />
             <Route path="/Archive" element={<Archive />} />
+            <Route path="/Location" element={<Location />} />
             <Route path="/notice/:id" element={<NoticeDetail />} />
             <Route path="/api/auth/callback/naver" element={<NaverCallback />} />
           </Routes>
