@@ -8,16 +8,15 @@ const NoticeBoard = () => {
   useEffect(() => {
     const fetchNotices = async () => {
       try {
-        // 데이터 가져오기
         const { data, error } = await supabase
           .from('notices')
-          .select('*')
+          .select('id, title, content, author, created_at') // 텍스트 컬럼만 명시적으로 선택
           .order('created_at', { ascending: false });
 
         if (error) throw error;
         setNotices(data || []);
       } catch (error) {
-        console.error('Error fetching notices:', error.message);
+        console.error('Fetch error:', error.message);
       } finally {
         setLoading(false);
       }
@@ -26,58 +25,50 @@ const NoticeBoard = () => {
     fetchNotices();
   }, []);
 
-  if (loading) return <div className="min-h-screen bg-[#0f172a] flex items-center justify-center text-white">로딩 중...</div>;
+  if (loading) return <div className="min-h-screen bg-[#0f172a] flex items-center justify-center text-white font-sans">데이터를 불러오는 중...</div>;
 
   return (
     <div className="min-h-screen bg-[#0f172a] p-6 text-white font-sans">
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <header className="mb-10 border-b border-slate-800 pb-6">
-          <h1 className="text-3xl font-bold">Notice Board</h1>
-          <p className="text-slate-400">공주시 공공디자인 진흥계획 아카이브</p>
+          <h1 className="text-3xl font-bold tracking-tight">Project Board</h1>
+          <p className="text-slate-400 mt-2">공주시 공공디자인 진흥계획 아카이브</p>
         </header>
 
-        <div className="grid gap-6">
+        <div className="space-y-4">
           {notices.length > 0 ? (
             notices.map((notice) => (
-              <article key={notice.id} className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col md:flex-row hover:border-blue-500 transition-colors">
+              <article 
+                key={notice.id} 
+                className="bg-slate-900/50 border border-slate-800 p-6 rounded-xl hover:border-blue-500/50 transition-all shadow-sm"
+              >
+                <div className="flex justify-between items-start mb-3">
+                  <h2 className="text-xl font-bold text-slate-100">{notice.title}</h2>
+                  <span className="text-xs text-slate-500 font-mono">
+                    {notice.created_at ? new Date(notice.created_at).toLocaleDateString() : ''}
+                  </span>
+                </div>
                 
-                {/* 이미지가 있을 때만 렌더링 */}
-                {notice.image_url && (
-                  <div className="md:w-48 h-48 flex-shrink-0">
-                    <img src={notice.image_url} alt="" className="w-full h-full object-cover" />
-                  </div>
-                )}
+                <p className="text-slate-400 leading-relaxed text-sm mb-4 line-clamp-3">
+                  {notice.content}
+                </p>
 
-                <div className="p-6 flex flex-col justify-between w-full">
-                  <div>
-                    <div className="flex justify-between items-start mb-2">
-                      <h2 className="text-xl font-semibold">{notice.title}</h2>
-                      <span className="text-xs text-slate-500">
-                        {new Date(notice.created_at).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <p className="text-slate-400 line-clamp-2 text-sm mb-4">{notice.content}</p>
+                <div className="flex items-center gap-2 mt-4 pt-4 border-t border-slate-800/50">
+                  <div className="w-5 h-5 bg-blue-500/20 rounded-full flex items-center justify-center">
+                    <span className="text-[10px] text-blue-400 font-bold">
+                      {notice.author ? notice.author[0] : 'M'}
+                    </span>
                   </div>
-
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-blue-400 font-medium">{notice.author || '관리자'}</span>
-                    
-                    {notice.file_url && (
-                      <a 
-                        href={notice.file_url} 
-                        target="_blank" 
-                        rel="noreferrer"
-                        className="text-xs bg-slate-800 px-3 py-1.5 rounded hover:bg-slate-700 transition"
-                      >
-                        파일 다운로드
-                      </a>
-                    )}
-                  </div>
+                  <span className="text-sm text-slate-300 font-medium">
+                    {notice.author || '관리자'}
+                  </span>
                 </div>
               </article>
             ))
           ) : (
-            <div className="text-center py-20 text-slate-500">게시물이 없습니다.</div>
+            <div className="text-center py-20 text-slate-500 border border-dashed border-slate-800 rounded-2xl">
+              등록된 게시물이 없습니다.
+            </div>
           )}
         </div>
       </div>
