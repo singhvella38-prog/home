@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { Link } from 'react-router-dom';
+
 const NoticeBoard = () => {
   const [notices, setNotices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,7 +11,7 @@ const NoticeBoard = () => {
       try {
         const { data, error } = await supabase
           .from('notices')
-          .select('id, title, content, author, created_at') // 텍스트 컬럼만 명시적으로 선택
+          .select('id, title, content, author, created_at')
           .order('created_at', { ascending: false });
 
         if (error) throw error;
@@ -46,32 +47,38 @@ const NoticeBoard = () => {
         <div className="space-y-4">
           {notices.length > 0 ? (
             notices.map((notice) => (
-              <article 
-                key={notice.id} 
-                className="bg-slate-900/50 border border-slate-800 p-6 rounded-xl hover:border-blue-500/50 transition-all shadow-sm"
-              >
-                <div className="flex justify-between items-start mb-3">
-                  <h2 className="text-xl font-bold text-slate-100">{notice.title}</h2>
-                  <span className="text-xs text-slate-500 font-mono">
-                    {notice.created_at ? new Date(notice.created_at).toLocaleDateString() : ''}
-                  </span>
-                </div>
-                
-                <p className="text-slate-400 leading-relaxed text-sm mb-4 line-clamp-3">
-                  {notice.content}
-                </p>
-
-                <div className="flex items-center gap-2 mt-4 pt-4 border-t border-slate-800/50">
-                  <div className="w-5 h-5 bg-blue-500/20 rounded-full flex items-center justify-center">
-                    <span className="text-[10px] text-blue-400 font-bold">
-                      {notice.author ? notice.author[0] : 'M'}
+              /* --- 수정된 부분: Link 태그로 감싸기 --- */
+              <Link to={`/notice/${notice.id}`} key={notice.id} className="block group">
+                <article 
+                  className="bg-slate-900/50 border border-slate-800 p-6 rounded-xl group-hover:border-blue-500/50 transition-all shadow-sm"
+                >
+                  <div className="flex justify-between items-start mb-3">
+                    {/* group-hover:text-blue-400 를 추가해서 마우스 올리면 제목 색이 변하게 했습니다 */}
+                    <h2 className="text-xl font-bold text-slate-100 group-hover:text-blue-400 transition-colors">
+                      {notice.title}
+                    </h2>
+                    <span className="text-xs text-slate-500 font-mono">
+                      {notice.created_at ? new Date(notice.created_at).toLocaleDateString() : ''}
                     </span>
                   </div>
-                  <span className="text-sm text-slate-300 font-medium">
-                    {notice.author || '관리자'}
-                  </span>
-                </div>
-              </article>
+                  
+                  <p className="text-slate-400 leading-relaxed text-sm mb-4 line-clamp-3">
+                    {notice.content}
+                  </p>
+
+                  <div className="flex items-center gap-2 mt-4 pt-4 border-t border-slate-800/50">
+                    <div className="w-5 h-5 bg-blue-500/20 rounded-full flex items-center justify-center">
+                      <span className="text-[10px] text-blue-400 font-bold">
+                        {notice.author ? notice.author[0] : 'M'}
+                      </span>
+                    </div>
+                    <span className="text-sm text-slate-300 font-medium">
+                      {notice.author || '관리자'}
+                    </span>
+                  </div>
+                </article>
+              </Link>
+              /* -------------------------------------- */
             ))
           ) : (
             <div className="text-center py-20 text-slate-500 border border-dashed border-slate-800 rounded-2xl">
