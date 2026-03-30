@@ -31,8 +31,8 @@ const NoticeBoard = () => {
     <div className="min-h-screen bg-[#0f172a] p-6 text-white font-sans">
       <div className="max-w-4xl mx-auto">
         <header className="mb-10 border-b border-slate-800 pb-6">
-          <h1 className="text-3xl font-bold tracking-tight">Project Board</h1>
-          <p className="text-slate-400 mt-2">공주시 공공디자인 진흥계획 아카이브</p>
+          <h1 className="text-3xl font-bold tracking-tight">Notice Board</h1>
+          <p className="text-slate-400 mt-2">집중 집중 알려드립니다.</p>
         </header>
 
         <div className="space-y-4">
