@@ -38,6 +38,8 @@ const NoticeBoard = () => {
           </div>
           <Link 
             to="/write" 
+            // ★ state를 추가하여 'notice' 카테고리임을 알려줍니다.
+            state={{ category: 'notice' }} 
             className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-lg font-bold transition-all shadow-lg shadow-blue-500/20"
           >
             글쓰기
