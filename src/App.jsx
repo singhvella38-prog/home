@@ -4,6 +4,7 @@ import MyPage from './pages/MyPage';
 import Login from './pages/Login';
 import Intro from './pages/Intro';
 import NoticeBoard from './pages/NoticeBoard';
+import NoticeDetail from './pages/NoticeDetail'; 
 import Write from './pages/Write';
 import NaverCallback from './pages/NaverCallback';
 
