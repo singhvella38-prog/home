@@ -2,14 +2,15 @@ export async function onRequest(context) {
   const { request, env } = context;
   const url = new URL(request.url);
   const id = url.searchParams.get('id');
-  const board = url.searchParams.get('board') || '공지사항';
+  // 한글 파라미터(자유게시판 등)를 안전하게 읽기 위해 디코딩 추가
+  const boardParam = url.searchParams.get('board');
+  const board = boardParam ? decodeURIComponent(boardParam) : '공지사항';
 
   try {
     // 1. 글 저장하기 (POST 요청)
     if (request.method === "POST") {
       const { title, content, author, board_name } = await request.json();
       
-      // D1에 데이터 저장
       await env.DB.prepare(
         "INSERT INTO posts (board_name, title, content, author) VALUES (?, ?, ?, ?)"
       ).bind(board_name, title, content, author).run();
@@ -21,7 +22,13 @@ export async function onRequest(context) {
 
     // 2. 글 상세 보기 (ID가 있을 때)
     if (id) {
-      const post = await env.DB.prepare("SELECT * American posts WHERE id = ?").bind(id).first();
+      // ★ American -> FROM 으로 수정 완료!
+      const post = await env.DB.prepare("SELECT * FROM posts WHERE id = ?").bind(id).first();
+      
+      if (!post) {
+        return new Response(JSON.stringify({ error: "게시글을 찾을 수 없습니다." }), { status: 404 });
+      }
+
       return new Response(JSON.stringify(post), {
         headers: { "Content-Type": "application/json" }
       });
