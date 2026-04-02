@@ -3,30 +3,33 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 const NoticeDetail = () => {
   const { id } = useParams();
-  const [notice, setNotice] = useState(null);
+  const [notice, setNotice] = useState(null); // 바구니 이름: notice
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-useEffect(() => {
-  const fetchPost = async () => {
-    try {
-      // 주소를 우리가 만든 통합 API인 /api/posts로 변경해야 합니다.
-      // 뒤에 ?id=번호 를 붙여서 서버가 어떤 글인지 알게 합니다.
-      const response = await fetch(`/api/posts?id=${id}`);
-      
-      if (!response.ok) throw new Error('게시물을 찾을 수 없습니다.');
-      
-      const data = await response.json();
-      if (!data) throw new Error('존재하지 않는 게시물입니다.');
-      
-      setPost(data);
-    } catch (error) {
-      console.error(error.message);
-      // 여기서 "존재하지 않는 게시물입니다" 메시지가 출력될 것입니다.
-    }
-  };
-  fetchPost();
-}, [id]);
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        setLoading(true); // 로딩 시작
+        const response = await fetch(`/api/posts?id=${id}`);
+        
+        if (!response.ok) throw new Error('게시물을 찾을 수 없습니다.');
+        
+        const data = await response.json();
+        if (!data) throw new Error('존재하지 않는 게시물입니다.');
+        
+        // ★ 수정: setPost가 아니라 위에서 만든 setNotice를 사용해야 합니다!
+        setNotice(data); 
+      } catch (error) {
+        console.error(error.message);
+        alert(error.message);
+      } finally {
+        // ★ 추가: 데이터 로딩이 끝나면 로딩 상태를 꺼줘야 화면이 보입니다!
+        setLoading(false); 
+      }
+    };
+    fetchPost();
+  }, [id]);
 
   if (loading) return (
     <div className="min-h-screen bg-[#0f172a] flex items-center justify-center text-white">
@@ -34,7 +37,12 @@ useEffect(() => {
     </div>
   );
   
-  if (!notice) return null;
+  if (!notice) return (
+    <div className="min-h-screen bg-[#0f172a] flex flex-col items-center justify-center text-white gap-4">
+      <p>게시물을 찾을 수 없습니다.</p>
+      <button onClick={() => navigate(-1)} className="bg-blue-600 px-4 py-2 rounded">뒤로가기</button>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-[#0f172a] p-6 text-white font-sans">
@@ -55,7 +63,6 @@ useEffect(() => {
             <span className="font-mono">
               {notice.created_at ? new Date(notice.created_at).toLocaleString() : ''}
             </span>
-            {/* 게시판 이름 표시 추가 */}
             <span className="text-slate-600">|</span>
             <span className="text-slate-500">{notice.board_name}</span>
           </div>
