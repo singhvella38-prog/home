@@ -11,7 +11,7 @@ const NoticeBoard = () => {
       try {
         setLoading(true);
         // Cloudflare Pages Functions API 호출
-        const response = await fetch('/api/notices');
+        const response = await fetch('/api/posts');
         
         if (!response.ok) {
           throw new Error('데이터를 불러오는 데 실패했습니다.');
