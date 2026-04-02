@@ -1,23 +1,20 @@
-import React, { useEffect, useState } from 'react'; // useEffect 추가
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabaseClient'; // supabase 불러오기
 
 const FreeBoard = () => {
   const navigate = useNavigate();
-  const [posts, setPosts] = useState([]); // 데이터를 담을 상태
+  const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 1. 데이터 불러오기 로직 추가
   useEffect(() => {
     const fetchFreePosts = async () => {
       try {
-        const { data, error } = await supabase
-          .from('notices') // 테이블 이름
-          .select('*')
-          .eq('category', 'free') // ★ 핵심: 자유게시판 데이터만 필터링
-          .order('created_at', { ascending: false });
-
-        if (error) throw error;
+        setLoading(true);
+        // 우리가 만든 자유게시판 전용 API 호출
+        const response = await fetch('/api/free-posts');
+        if (!response.ok) throw new Error('데이터 로딩 실패');
+        
+        const data = await response.json();
         setPosts(data || []);
       } catch (error) {
         console.error('Error fetching free posts:', error.message);
@@ -29,7 +26,11 @@ const FreeBoard = () => {
     fetchFreePosts();
   }, []);
 
-  if (loading) return <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">로딩 중...</div>;
+  if (loading) return (
+    <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+      로딩 중...
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gray-900 text-white py-12 px-4">
@@ -42,13 +43,12 @@ const FreeBoard = () => {
               자유 게시판
             </h1>
             <p className="text-gray-400 mt-2 ml-5">
-              회원 여러분의 소중한 의견을 자유롭게 나누는 공간입니다.
+              회원 여러분의 소중한 의견을 자유롭게 나누는 공간입니다. (D1 DB)
             </p>
           </div>
           
-          {/* 2. 글쓰기 이동 시 category 정보 전달 */}
           <button 
-            onClick={() => navigate('/Write', { state: { category: 'free' } })} // ★ state 전달
+            onClick={() => navigate('/Write', { state: { category: 'free' } })}
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold transition shadow-lg flex items-center gap-2 w-fit"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,7 +78,7 @@ const FreeBoard = () => {
                     onClick={() => navigate(`/notice/${post.id}`)}
                   >
                     <td className="py-5 px-6 text-center text-gray-500">
-                      {posts.length - index} {/* 역순 번호 표시 */}
+                      {posts.length - index}
                     </td>
                     <td className="py-5 px-6 font-medium group-hover:text-blue-400 transition">
                       {post.title}
