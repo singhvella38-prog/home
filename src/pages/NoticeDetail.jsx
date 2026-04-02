@@ -7,30 +7,26 @@ const NoticeDetail = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchNotice = async () => {
-      try {
-        setLoading(true);
-        // 쿼리 스트링(?id=...) 방식으로 API 호출
-        const response = await fetch(`/api/post?id=${id}`);
-        
-        if (!response.ok) {
-          throw new Error('게시글을 불러오지 못했습니다.');
-        }
-
-        const data = await response.json();
-        setNotice(data);
-      } catch (error) {
-        console.error('Error:', error);
-        alert('존재하지 않는 게시글입니다.');
-        navigate(-1); // 이전 페이지로 돌아가기
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchNotice();
-  }, [id, navigate]);
+useEffect(() => {
+  const fetchPost = async () => {
+    try {
+      // 주소를 우리가 만든 통합 API인 /api/posts로 변경해야 합니다.
+      // 뒤에 ?id=번호 를 붙여서 서버가 어떤 글인지 알게 합니다.
+      const response = await fetch(`/api/posts?id=${id}`);
+      
+      if (!response.ok) throw new Error('게시물을 찾을 수 없습니다.');
+      
+      const data = await response.json();
+      if (!data) throw new Error('존재하지 않는 게시물입니다.');
+      
+      setPost(data);
+    } catch (error) {
+      console.error(error.message);
+      // 여기서 "존재하지 않는 게시물입니다" 메시지가 출력될 것입니다.
+    }
+  };
+  fetchPost();
+}, [id]);
 
   if (loading) return (
     <div className="min-h-screen bg-[#0f172a] flex items-center justify-center text-white">
