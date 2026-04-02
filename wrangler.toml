@@ -1,7 +1,4 @@
-name = "home"
-pages_build_output_dir = "dist"
-
 [[d1_databases]]
-binding = "DB"
+binding = "DB"      # <--- 'database'나 다른 이름이면 안 됩니다. 반드시 "DB"여야 함!
 database_name = "notice"
-database_id = "c0ed9d4b-43c3-4c7d-aec3-190fa168458c"
+database_id = "xxxx-xxxx-xxxx" # 본인의 ID
