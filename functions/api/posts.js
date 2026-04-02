@@ -2,6 +2,7 @@ export async function onRequest(context) {
   const { request, env } = context;
   const url = new URL(request.url);
   const id = url.searchParams.get('id');
+  // 기본적으로 공지사항을 불러오도록 설정
   const board = url.searchParams.get('board') || '공지사항';
 
   try {

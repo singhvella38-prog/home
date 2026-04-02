@@ -1,0 +1,7 @@
+name = "home"
+pages_build_output_dir = "dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "notice"
+database_id = "c0ed9d4b-43c3-4c7d-aec3-190fa168458c"
