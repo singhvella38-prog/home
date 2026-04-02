@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
-import { supabase } from '../lib/supabaseClient';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const Write = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // 보낸 쪽에서 전달한 category 값을 받습니다. (없으면 기본값 'free')
+  // 카테고리 매핑 (DB에는 한글로 저장하는 것이 관리하기 편합니다)
+  const categoryMap = {
+    notice: '공지사항',
+    free: '자유게시판'
+  };
   const boardCategory = location.state?.category || 'free';
+  const dbBoardName = categoryMap[boardCategory];
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [author, setAuthor] = useState(''); // 나중에는 로그인 정보에서 자동으로 가져오게 수정 가능
+  const [author, setAuthor] = useState(''); 
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -19,22 +23,23 @@ const Write = () => {
     setLoading(true);
 
     try {
-      const { error } = await supabase
-        .from('notices')
-        .insert([
-          { 
-            title, 
-            content, 
-            author, 
-            category: boardCategory // ★ 여기서 구분값이 저장됩니다!
-          }
-        ]);
+      // Cloudflare API 서버로 데이터 전송
+      const response = await fetch('/api/write', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          title, 
+          content, 
+          author, 
+          board_name: dbBoardName 
+        }),
+      });
 
-      if (error) throw error;
+      if (!response.ok) throw new Error('글 등록 실패');
 
       alert('글이 성공적으로 등록되었습니다.');
       
-      // 글 작성 후 원래 있던 게시판으로 돌아갑니다.
+      // 작성 후 해당 게시판으로 이동
       if (boardCategory === 'notice') {
         navigate('/NoticeBoard');
       } else {
@@ -55,6 +60,7 @@ const Write = () => {
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* ... 이하 UI 코드는 기존과 동일 (생략) ... */}
           <div>
             <label className="block text-sm font-medium text-gray-400 mb-2">작성자</label>
             <input
