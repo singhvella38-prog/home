@@ -1,43 +1,40 @@
-export async function onRequest(context) {
-  const { request, env } = context;
-  const url = new URL(request.url);
-  const id = url.searchParams.get('id');
-  // 기본적으로 공지사항을 불러오도록 설정
-  const board = url.searchParams.get('board') || '공지사항';
+const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-  try {
-    // 1. 글 저장하기 (POST 요청일 때)
-    if (request.method === "POST") {
-      const { title, content, author, board_name } = await request.json();
-      await env.DB.prepare(
-        "INSERT INTO posts (title, content, author, board_name) VALUES (?, ?, ?, ?)"
-      ).bind(title, content, author, board_name).run();
-      return new Response(JSON.stringify({ success: true }), {
-        headers: { "Content-Type": "application/json" }
+    try {
+      // 1. 카테고리 이름을 DB와 똑같이 맞춥니다.
+      const dbBoardName = boardCategory === 'notice' ? '공지사항' : '자유게시판';
+
+      // 2. 서버로 데이터를 보냅니다.
+      const response = await fetch('/api/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          title: title, 
+          content: content, 
+          author: author, 
+          board_name: dbBoardName // ★ 이 이름이 posts.js의 변수명과 일치해야 합니다!
+        }),
       });
+
+      if (!response.ok) {
+        // 서버에서 에러가 난 경우 상세 내용을 출력해봅니다.
+        const errorData = await response.json();
+        throw new Error(errorData.error || '글 등록 실패');
+      }
+
+      alert('글이 성공적으로 등록되었습니다.');
+      
+      // 작성 후 해당 게시판으로 이동
+      if (boardCategory === 'notice') {
+        navigate('/NoticeBoard');
+      } else {
+        navigate('/FreeBoard');
+      }
+    } catch (error) {
+      alert('오류 발생: ' + error.message);
+    } finally {
+      setLoading(false);
     }
-
-    // 2. 글 상세 보기 (ID가 있을 때)
-    if (id) {
-      const post = await env.DB.prepare("SELECT * FROM posts WHERE id = ?").bind(id).first();
-      return new Response(JSON.stringify(post), {
-        headers: { "Content-Type": "application/json" }
-      });
-    }
-
-    // 3. 목록 가져오기 (기본 GET 요청)
-    const { results } = await env.DB.prepare(
-      "SELECT * FROM posts WHERE board_name = ? ORDER BY created_at DESC"
-    ).bind(board).all();
-
-    return new Response(JSON.stringify(results), {
-      headers: { "Content-Type": "application/json" }
-    });
-
-  } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), { 
-      status: 500,
-      headers: { "Content-Type": "application/json" }
-    });
-  }
-}
+  };
