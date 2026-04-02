@@ -6,12 +6,15 @@ const FreeBoard = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+ useEffect(() => {
     const fetchFreePosts = async () => {
       try {
         setLoading(true);
-        // 우리가 만든 자유게시판 전용 API 호출
-        const response = await fetch('/api/free-posts');
+        
+        // 1. 주소를 /api/posts로 변경
+        // 2. 뒤에 ?board=자유게시판 을 붙여서 자유게시판 데이터만 요청
+        const response = await fetch('/api/posts?board=' + encodeURIComponent('자유게시판'));
+        
         if (!response.ok) throw new Error('데이터 로딩 실패');
         
         const data = await response.json();
