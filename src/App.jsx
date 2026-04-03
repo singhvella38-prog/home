@@ -66,16 +66,27 @@ function App() {
             {user ? (
               // 로그인 된 상태
               <div className="flex items-center gap-4 border-l border-slate-700 pl-6">
-                <div className="flex items-center gap-2">
+                {/* 이미지와 이름을 하나의 Link로 감싸서 어디를 눌러도 마이페이지로 가게 합니다 */}
+                <Link 
+                  to="/mypage" 
+                  className="flex items-center gap-2 group transition-all hover:opacity-80"
+                >
                   {user.profile_image && (
-                    <img src={user.profile_image} alt="profile" className="w-8 h-8 rounded-full border border-blue-500" />
+                    <img 
+                      src={user.profile_image} 
+                      alt="profile" 
+                      className="w-9 h-9 rounded-full border-2 border-blue-500 group-hover:border-white transition-colors object-cover" 
+                    />
                   )}
-                  <span className="text-sm font-bold text-blue-400">{user.name}님</span>
-                </div>
-                <Link to="/mypage" className="text-sm hover:text-white text-slate-400 transition">마이페이지</Link>
+                  <span className="text-sm font-bold text-blue-400 group-hover:text-white transition-colors">
+                    {user.name}님
+                  </span>
+                </Link>
+
+                {/* 로그아웃 버튼 */}
                 <button 
                   onClick={handleLogout}
-                  className="bg-slate-700 px-3 py-1.5 rounded text-xs hover:bg-red-600 transition"
+                  className="bg-slate-800 border border-slate-700 px-3 py-1.5 rounded text-xs text-slate-400 hover:bg-red-600 hover:text-white hover:border-red-600 transition-all ml-2"
                 >
                   로그아웃
                 </button>
@@ -83,7 +94,6 @@ function App() {
             ) : (
               // 로그인 안 된 상태
               <>
-                <Link to="/mypage" className="hover:text-blue-400 transition">마이페이지</Link>
                 <Link to="/Login" className="bg-blue-600 px-4 py-1.5 rounded hover:bg-blue-700 transition">로그인</Link>
               </>
             )}
