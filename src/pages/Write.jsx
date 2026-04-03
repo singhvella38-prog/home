@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom'; // 1. useLocation 추가
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Write = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // 2. 위치 정보 가져오기
+  const location = useLocation();
   
-  // 3. 전달받은 카테고리(공지사항 or 자유게시판)를 가져옵니다. 
-  // 만약 직접 주소를 치고 들어오면 기본값으로 '자유게시판'을 설정합니다.
+  // 1. 이전 페이지(Board.jsx)에서 넘겨준 한글 카테고리명을 받습니다.
   const category = location.state?.category || '자유게시판';
 
   const [title, setTitle] = useState('');
@@ -30,7 +29,7 @@ const Write = () => {
       title,
       content,
       author: user.name,
-      board_name: category // ★ 여기서 고정값이 아닌 category 변수를 사용합니다!
+      board_name: category 
     };
 
     try {
@@ -42,8 +41,11 @@ const Write = () => {
 
       if (response.ok) {
         alert(`${category}에 글이 등록되었습니다.`);
-        // 등록 후 해당 게시판으로 돌아가기
-        navigate(category === '공지사항' ? '/NoticeBoard' : '/FreeBoard');
+        
+        // 2. ★ 수정 포인트: 통합된 게시판 주소 형식에 맞춰 이동합니다.
+        // 한글 카테고리에 따라 /board/notice 또는 /board/free로 보냅니다.
+        const targetType = category === '공지사항' ? 'notice' : 'free';
+        navigate(`/board/${targetType}`);
       }
     } catch (error) {
       console.error('Error:', error);

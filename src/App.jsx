@@ -1,11 +1,10 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import { useState, useEffect } from 'react'; // 추가
+import { useState, useEffect } from 'react';
 import Home from './pages/Home';
 import MyPage from './pages/MyPage';
 import Login from './pages/Login';
 import Intro from './pages/Intro';
-import NoticeBoard from './pages/NoticeBoard';
-import FreeBoard from './pages/FreeBoard';
+import Board from './pages/Board'; // 통합 게시판 컴포넌트 임포트
 import NoticeDetail from './pages/NoticeDetail'; 
 import Write from './pages/Write';
 import Archive from './pages/Archive';
@@ -13,10 +12,8 @@ import Location from './pages/Location';
 import NaverCallback from './pages/NaverCallback';
 
 function App() {
-  // 1. 유저 정보를 담을 상태 (초기값은 localStorage에서 가져옴)
   const [user, setUser] = useState(null);
 
-  // 2. 브라우저가 켜질 때나 새로고침할 때 로그인 정보를 확인
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
@@ -24,12 +21,11 @@ function App() {
     }
   }, []);
 
-  // 3. 로그아웃 핸들러
   const handleLogout = () => {
-    localStorage.removeItem('user'); // 저장된 정보 삭제
-    setUser(null); // 상태 초기화
+    localStorage.removeItem('user');
+    setUser(null);
     alert('로그아웃 되었습니다.');
-    window.location.href = '/'; // 홈으로 이동
+    window.location.href = '/';
   };
 
   return (
@@ -47,26 +43,24 @@ function App() {
             <Link to="/Intro" className="hover:text-blue-400 transition">Intro</Link>
             <Link to="/Location" className="hover:text-blue-400 transition">오시는 길</Link>
             
+            {/* 게시판 드롭다운: 주소를 /board/notice 와 /board/free 로 변경 */}
             <div className="relative group">
-              <Link to="/NoticeBoard" className="hover:text-blue-400 transition flex items-center py-2">
+              <Link to="/board/notice" className="hover:text-blue-400 transition flex items-center py-2">
                 게시판
                 <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </Link>
               <div className="absolute hidden group-hover:block w-32 bg-slate-800 border border-slate-700 rounded shadow-xl top-full left-0 overflow-hidden">
-                <Link to="/NoticeBoard" className="block px-4 py-2 hover:bg-blue-600 text-sm">공지사항</Link>
-                <Link to="/FreeBoard" className="block px-4 py-2 hover:bg-blue-600 text-sm">자유 게시판</Link>
+                <Link to="/board/notice" className="block px-4 py-2 hover:bg-blue-600 text-sm">공지사항</Link>
+                <Link to="/board/free" className="block px-4 py-2 hover:bg-blue-600 text-sm">자유 게시판</Link>
               </div>
             </div>
 
             <Link to="/Archive" className="hover:text-blue-400 transition">자료실</Link>
             
-            {/* 4. 로그인 상태에 따른 조건부 렌더링 */}
             {user ? (
-              // 로그인 된 상태
               <div className="flex items-center gap-4 border-l border-slate-700 pl-6">
-                {/* 이미지와 이름을 하나의 Link로 감싸서 어디를 눌러도 마이페이지로 가게 합니다 */}
                 <Link 
                   to="/mypage" 
                   className="flex items-center gap-2 group transition-all hover:opacity-80"
@@ -83,7 +77,6 @@ function App() {
                   </span>
                 </Link>
 
-                {/* 로그아웃 버튼 */}
                 <button 
                   onClick={handleLogout}
                   className="bg-slate-800 border border-slate-700 px-3 py-1.5 rounded text-xs text-slate-400 hover:bg-red-600 hover:text-white hover:border-red-600 transition-all ml-2"
@@ -92,10 +85,7 @@ function App() {
                 </button>
               </div>
             ) : (
-              // 로그인 안 된 상태
-              <>
-                <Link to="/Login" className="bg-blue-600 px-4 py-1.5 rounded hover:bg-blue-700 transition">로그인</Link>
-              </>
+              <Link to="/Login" className="bg-blue-600 px-4 py-1.5 rounded hover:bg-blue-700 transition">로그인</Link>
             )}
           </div>
         </nav>
@@ -106,13 +96,14 @@ function App() {
             <Route path="/mypage" element={<MyPage />} />
             <Route path="/Login" element={<Login />} />
             <Route path="/Intro" element={<Intro />} />
-            <Route path="/NoticeBoard" element={<NoticeBoard />} />
-            <Route path="/FreeBoard" element={<FreeBoard />} />
+            
+            {/* ★ 통합 게시판 라우트: :type 파라미터 사용 */}
+            <Route path="/board/:type" element={<Board />} />
+            
             <Route path="/Write" element={<Write />} />
             <Route path="/Archive" element={<Archive />} />
             <Route path="/Location" element={<Location />} />
             <Route path="/notice/:id" element={<NoticeDetail />} />
-            {/* Callback 페이지에 setUser 전달 */}
             <Route path="/api/auth/callback/naver" element={<NaverCallback setUser={setUser} />} />
           </Routes>
         </main>
