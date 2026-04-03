@@ -1,34 +1,46 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const NaverCallback = () => {
+const NaverCallback = ({ setUser }) => { // 1. App.jsx에서 보낸 setUser를 받습니다.
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 1. URL 주소창에서 네이버가 던져준 code와 state 값을 가져옵니다.
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
     const state = params.get("state");
 
     if (code) {
-      // 2. 코드가 확인되면 일단 성공 메시지를 띄우고 홈으로 보냅니다.
-      // (실제 서비스에서는 여기서 백엔드 서버와 통신하여 토큰을 받아야 합니다.)
-      console.log("네이버 인증 코드:", code);
-      alert("네이버 로그인을 시도 중입니다. 인증 코드를 확인했습니다.");
+      console.log("네이버 인증 코드 확인:", code);
+
+      // [임시 처리] 실제 서비스라면 여기서 서버와 통신하여 유저 정보를 가져와야 합니다.
+      // 지금은 로그인이 성공했다는 가정하에 가짜 유저 데이터를 만듭니다.
+      const mockUser = {
+        name: "네이버 사용자",
+        profile_image: "https://ssl.pstatic.net/static/pwe/address/img_profile.png", // 네이버 기본 프로필 예시
+        email: "user@naver.com"
+      };
+
+      // 2. 브라우저 저장소(localStorage)에 유저 정보 저장 (새로고침해도 유지되게)
+      localStorage.setItem('user', JSON.stringify(mockUser));
+
+      // 3. App.jsx의 상태 업데이트 (내비게이션 바가 즉시 바뀌게 함)
+      setUser(mockUser);
+
+      alert("로그인에 성공하였습니다!");
       
-      // 일단 홈("/")이나 마이페이지("/mypage")로 이동시킵니다.
+      // 4. 홈으로 이동
       navigate("/"); 
     } else {
-      // 코드가 없다면 에러이므로 로그인 페이지로 돌려보냅니다.
       console.error("인증 코드를 찾을 수 없습니다.");
+      alert("로그인에 실패하였습니다.");
       navigate("/Login");
     }
-  }, [navigate]);
+  }, [navigate, setUser]);
 
   return (
-    <div className="flex flex-col items-center justify-center py-20">
+    <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center text-white">
       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#03C755] mb-4"></div>
-      <p className="text-lg font-medium text-gray-600">네이버 로그인 처리 중...</p>
+      <p className="text-lg font-medium text-gray-400">네이버 로그인 처리 중...</p>
     </div>
   );
 };
